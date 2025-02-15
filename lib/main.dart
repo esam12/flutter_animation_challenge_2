@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const App(),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({
+    super.key,
+  });
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(brightness: Brightness.dark),
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.dark,
-      home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
+      home: const HomePage(),
     );
   }
 }
@@ -34,14 +37,14 @@ class Person {
   });
 }
 
-const List<Person> people = [
-  Person(name: 'John', age: 25, emoji: '👨'),
-  Person(name: 'Jane', age: 30, emoji: '👩'),
-  Person(name: 'Bob', age: 35, emoji: '👨'),
+const people = [
+  Person(name: 'John', age: 20, emoji: '🙋🏻‍♂️'),
+  Person(name: 'Jane', age: 21, emoji: '👸🏽'),
+  Person(name: 'Jack', age: 22, emoji: '🧔🏿‍♂️'),
 ];
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,47 +54,108 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ListView.builder(
         itemCount: people.length,
-        itemBuilder: (context, index) => ListTile(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PersonDetails(
-                person: people[index],
+        itemBuilder: (context, index) {
+          final person = people[index];
+          return ListTile(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DetailsPage(
+                    person: person,
+                  ),
+                ),
+              );
+            },
+            leading: Hero(
+              tag: person.name,
+              child: Text(
+                person.emoji,
+                style: const TextStyle(
+                  fontSize: 40,
+                ),
               ),
             ),
-          ),
-          title: Text(people[index].name),
-          subtitle: Text('${people[index].age} years old'),
-          leading: Text(
-            people[index].emoji,
-            style: TextStyle(fontSize: 40),
-          ),
-          trailing: Icon(Icons.chevron_right),
-        ),
+            title: Text(person.name),
+            subtitle: Text(
+              '${person.age} years old',
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class PersonDetails extends StatelessWidget {
-  const PersonDetails({super.key, required this.person});
-
+class DetailsPage extends StatelessWidget {
   final Person person;
+
+  const DetailsPage({
+    super.key,
+    required this.person,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          person.emoji,
-          style: TextStyle(fontSize: 40),
+        title: Hero(
+          flightShuttleBuilder: (
+            flightContext,
+            animation,
+            flightDirection,
+            fromHeroContext,
+            toHeroContext,
+          ) {
+            switch (flightDirection) {
+              case HeroFlightDirection.push:
+                return Material(
+                  color: Colors.transparent,
+                  child: ScaleTransition(
+                    scale: animation.drive(
+                      Tween<double>(
+                        begin: 0.0,
+                        end: 1.0,
+                      ).chain(
+                        CurveTween(
+                          curve: Curves.fastOutSlowIn,
+                        ),
+                      ),
+                    ),
+                    child: toHeroContext.widget,
+                  ),
+                );
+              case HeroFlightDirection.pop:
+                return Material(
+                  color: Colors.transparent,
+                  child: fromHeroContext.widget,
+                );
+            }
+          },
+          tag: person.name,
+          child: Text(
+            person.emoji,
+            style: const TextStyle(
+              fontSize: 50,
+            ),
+          ),
         ),
       ),
       body: Center(
         child: Column(
-          spacing: 16.0,
           children: [
-            Text(person.name),
-            Text('${person.age} years old'),
+            const SizedBox(height: 20),
+            Text(
+              person.name,
+              style: const TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '${person.age} years old',
+              style: const TextStyle(fontSize: 20),
+            ),
           ],
         ),
       ),
