@@ -49,8 +49,51 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('People'),
       ),
-      body: const Center(
-        child: Text('Flutter Animation Challenge 4'),
+      body: ListView.builder(
+        itemCount: people.length,
+        itemBuilder: (context, index) => ListTile(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PersonDetails(
+                person: people[index],
+              ),
+            ),
+          ),
+          title: Text(people[index].name),
+          subtitle: Text('${people[index].age} years old'),
+          leading: Text(
+            people[index].emoji,
+            style: TextStyle(fontSize: 40),
+          ),
+          trailing: Icon(Icons.chevron_right),
+        ),
+      ),
+    );
+  }
+}
+
+class PersonDetails extends StatelessWidget {
+  const PersonDetails({super.key, required this.person});
+
+  final Person person;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          person.emoji,
+          style: TextStyle(fontSize: 40),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          spacing: 16.0,
+          children: [
+            Text(person.name),
+            Text('${person.age} years old'),
+          ],
+        ),
       ),
     );
   }
