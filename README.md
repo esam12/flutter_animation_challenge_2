@@ -27,12 +27,12 @@ A sophisticated demonstration of Flutter Hero animations with custom transition 
 ### Steps
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/flutter-hero-animation-demo.git
+git clone https://github.com/esam12/flutter_animation_challenge_2.git
 ```
 
 2. Navigate to project directory:
 ```bash
-cd flutter-hero-animation-demo
+cd flutter_animation_challenge_2
 ```
 
 3. Install dependencies:
